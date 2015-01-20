@@ -1,5 +1,5 @@
-## android-empty-project
-This is empty project to start open source library.
+## android-pathview
+Android view with both path from constructed path or from svg.
 
 ## Licence
 
