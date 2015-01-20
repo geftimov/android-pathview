@@ -1,31 +1,44 @@
 package com.eftimoff.empty;
 
-import android.animation.ObjectAnimator;
+import android.graphics.Color;
 import android.graphics.Path;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.animation.LinearInterpolator;
+import android.view.View;
+import android.widget.Button;
 
 import com.eftimoff.androipathview.PathView;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		// Create a straight line
-		Path path = new Path();
-		path.moveTo(32, 32);
-		path.lineTo(232, 32);
+    private PathView pathView;
 
-		final PathView view = (PathView) findViewById(R.id.pathView);
-		view.setPath(path);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-		ObjectAnimator anim = ObjectAnimator.ofFloat(view, "percentage", 0.0f, 1.0f);
-		anim.setDuration(2000);
-		anim.setInterpolator(new LinearInterpolator());
-		anim.start();
-	}
+        final Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(this);
+        pathView = (PathView) findViewById(R.id.pathView);
+        pathView.setPathColor(Color.RED);
+
+        // Create a straight line
+        final Path path = new Path();
+        final int x = 0;
+        final int y = 350;
+        path.moveTo(x, x);
+        path.lineTo(x + y, x);
+        path.lineTo(x + y, x + y);
+        path.lineTo(x, x + y);
+        path.lineTo(x, x);
+
+        pathView.setPath(path);
+    }
+
+    @Override
+    public void onClick(View v) {
+        pathView.animatePath(5000);
+    }
 }

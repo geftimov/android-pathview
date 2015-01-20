@@ -3,11 +3,5 @@
     <declare-styleable name="PathView">
         <attr name="pathColor" format="color"/>
         <attr name="pathWidth" format="float"/>
-        <attr name="pathEffect" format="enum">
-            <enum name="corner" value="0"/>
-            <enum name="dash" value="1"/>
-            <enum name="discrete" value="2"/>
-            <enum name="path" value="3"/>
-        </attr>
     </declare-styleable>
 </resources>
