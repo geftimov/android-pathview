@@ -126,12 +126,10 @@ public class PathView extends View {
 
         region.setPath(path, clip);
 
-        //I need this because the region of the path is as big as the view so i need to make it bigger
-        //TODO to replace that or remove it?
-        final int magicNumber = (int) (pathWidth * 2);
+        final int widthOfPaths = (int) (pathWidth * 2);
 
-        int desiredWidth = region.getBounds().left + region.getBounds().width() + magicNumber;
-        int desiredHeight = region.getBounds().top + region.getBounds().height() + magicNumber;
+        int desiredWidth = region.getBounds().left + region.getBounds().width() + widthOfPaths;
+        int desiredHeight = region.getBounds().top + region.getBounds().height() + widthOfPaths;
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
