@@ -1,5 +1,8 @@
 ## android-pathview
-Android view that animate the both path from constructed path or from svg.
+
+You want to animate svg or normal Paths?<br\>
+Change the color, pathWidth or add svg.<br\>
+Animate the "procentage" property to make the animation.
 
 ### There are two types of paths :
 
