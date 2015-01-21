@@ -6,6 +6,7 @@ Android view that animate the both path from constructed path or from svg.
 #### 1. From Svg
 
     <com.eftimoff.androipathview.PathView
+    	xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/pathView"
         android:layout_width="150dp"
         android:layout_height="150dp"
@@ -27,6 +28,7 @@ Result
 #### 2. From Path
 
     <com.eftimoff.androipathview.PathView
+    	xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/pathView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
