@@ -1,5 +1,78 @@
 ## android-pathview
-Android view with both path from constructed path or from svg.
+Android view that animate the both path from constructed path or from svg.
+
+### There are two types of paths :
+
+#### 1. From Svg
+
+    <com.eftimoff.androipathview.PathView
+        android:id="@+id/pathView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:pathColor="@android:color/white"
+        app:svg="@raw/settings"
+        app:pathWidth="5"/>
+        
+
+In Code    
+    
+```
+pathView.animatePath(700);
+```
+
+Result
+
+![svg](https://github.com/geftimov/android-pathview/blob/master/art/settings.gif) 
+
+#### 2. From Path
+
+    <com.eftimoff.androipathview.PathView
+        android:id="@+id/pathView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:pathColor="@android:color/white"
+        app:pathWidth="3"/>
+        
+
+In Code    
+    
+```
+final Path path = new Path();
+    path.moveTo(0.0f, 0.0f);
+    path.lineTo(length / 4f, 0.0f);
+    path.lineTo(length, height / 2.0f);
+    path.lineTo(length / 4f, height);
+    path.lineTo(0.0f, height);
+	path.lineTo(length * 3f / 4f, height / 2f);
+	path.lineTo(0.0f, 0.0f);
+	path.close();	
+	
+pathView.setPath(path);
+pathView.animatePath(700);
+```
+
+Result
+
+![path](https://github.com/geftimov/android-pathview/blob/master/art/path.gif)  
+
+### Limitations
+
+When working with SVGs you can not WRAP_CONTENT your views.
+
+### Thanks to
+
+* https://github.com/romainguy/road-trip
+* http://www.curious-creature.com/2013/12/21/android-recipe-4-path-tracing/
+* https://github.com/matthewrkula/AnimatedPathView
+
+### Contributors
+
+I want to update this library and make it better. So any help will be appreciated.
+Make and pull - request and we can discuss it.
+
+### Download
+
+It will be in maven central.
 
 ## Licence
 
