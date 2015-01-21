@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathEffect;
 import android.graphics.PathMeasure;
+import android.graphics.Region;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +23,11 @@ import java.util.List;
 public class PathView extends View {
 
 	public static final String LOG_TAG = "PathView";
+
+	/* Huge rectangle to bound all possible paths */
+	private Region clip = new Region(0, 0, 10000, 10000);
+	/* Define the region */
+	private final Region region = new Region();
 
 	private Paint paint;
 	private int pathColor;
@@ -146,9 +152,18 @@ public class PathView extends View {
 
 	}
 
+
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		int desiredWidth = 0;
+		int desiredHeight = 0;
+		for (Path path : paths) {
+			region.setPath(path, clip);
+			desiredWidth += region.getBounds().left + region.getBounds().width() + pathWidth;
+			desiredHeight += region.getBounds().top + region.getBounds().height() + pathWidth;
+
+		}
 		int widthSize = MeasureSpec.getSize(widthMeasureSpec);
 		int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 		int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -156,14 +171,20 @@ public class PathView extends View {
 
 		int measuredWidth, measuredHeight;
 
-		if (widthMode == MeasureSpec.AT_MOST)
-			throw new IllegalStateException("AnimatedPathView cannot have a WRAP_CONTENT property");
-		else
+		if (widthMode == MeasureSpec.AT_MOST) {
+			measuredWidth = desiredWidth;
+			if (svgResourceId != 0) {
+				throw new IllegalStateException("AnimatedPathView cannot have a WRAP_CONTENT property");
+			}
+		} else
 			measuredWidth = widthSize;
 
-		if (heightMode == MeasureSpec.AT_MOST)
-			throw new IllegalStateException("AnimatedPathView cannot have a WRAP_CONTENT property");
-		else
+		if (heightMode == MeasureSpec.AT_MOST) {
+			measuredHeight = desiredHeight;
+			if (svgResourceId != 0) {
+				throw new IllegalStateException("AnimatedPathView cannot have a WRAP_CONTENT property");
+			}
+		} else
 			measuredHeight = heightSize;
 
 		setMeasuredDimension(measuredWidth, measuredHeight);
