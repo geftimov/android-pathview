@@ -26,16 +26,16 @@ public class SecondActivity extends ActionBarActivity {
 	}
 
 	private Path makeConvexArrow(float length, float height) {
-		Path p = new Path();
-		p.moveTo(0.0f, 0.0f);
-		p.lineTo(length / 4f, 0.0f);
-		p.lineTo(length, height / 2.0f);
-		p.lineTo(length / 4f, height);
-		p.lineTo(0.0f, height);
-		p.lineTo(length * 3f / 4f, height / 2f);
-		p.lineTo(0.0f, 0.0f);
-		p.close();
-		return p;
+		final Path path = new Path();
+		path.moveTo(0.0f, 0.0f);
+		path.lineTo(length / 4f, 0.0f);
+		path.lineTo(length, height / 2.0f);
+		path.lineTo(length / 4f, height);
+		path.lineTo(0.0f, height);
+		path.lineTo(length * 3f / 4f, height / 2f);
+		path.lineTo(0.0f, 0.0f);
+		path.close();
+		return path;
 	}
 
 

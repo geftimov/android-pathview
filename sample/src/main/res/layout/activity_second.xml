@@ -9,11 +9,9 @@
 
     <com.eftimoff.androipathview.PathView
         android:id="@+id/pathView"
-        android:background="@android:color/holo_red_light"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:pathColor="@android:color/white"
-        app:svg="@raw/settings"
-        app:pathWidth="5"/>
+        app:pathWidth="3"/>
 
 </LinearLayout>
