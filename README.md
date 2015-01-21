@@ -74,13 +74,6 @@ Make and pull - request and we can discuss it.
 
 ### Download
 
-For now it is my remote repository: 
-
-	repositories {
-		maven { url "https://oss.sonatype.org/content/repositories/comeftimoff-1003" }
-		mavenCentral()
-	}
-
 	dependencies {
 		compile 'com.eftimoff:android-pathview:1.0.0@aar'
 	}
