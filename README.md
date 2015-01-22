@@ -1,6 +1,6 @@
 ## android-pathview
 
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-android--pathview-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1421) [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/geftimov/android-pathview/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.eftimoff/android-pathview/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.eftimoff/android-pathview) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-android--pathview-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1421) [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/geftimov/android-pathview/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 You want to animate svg or normal Paths?<br\>
 Change the color, pathWidth or add svg.<br\>
