@@ -1,5 +1,7 @@
 ## android-pathview
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-android--pathview-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1421) [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/geftimov/android-pathview/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
 You want to animate svg or normal Paths?<br\>
 Change the color, pathWidth or add svg.<br\>
 Animate the "procentage" property to make the animation.
@@ -98,5 +100,5 @@ Make and pull - request and we can discuss it.
     limitations under the License.
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/geftimov/android-pathview/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
 
