@@ -15,12 +15,12 @@ public class SecondActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_second);
 		final PathView pathView = (PathView) findViewById(R.id.pathView);
-//		final Path path = makeConvexArrow(50, 100);
-//		pathView.setPath(path);
+		final Path path = makeConvexArrow(50, 100);
+		pathView.setPath(path);
 		pathView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				pathView.animatePath(700);
+				pathView.animatePath(2700);
 			}
 		});
 	}

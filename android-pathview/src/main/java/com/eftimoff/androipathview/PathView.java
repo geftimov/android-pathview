@@ -4,12 +4,8 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PathEffect;
-import android.graphics.PathMeasure;
-import android.graphics.Region;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -17,43 +13,36 @@ import android.view.animation.LinearInterpolator;
 
 import com.eftimoff.mylibrary.R;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PathView extends View {
 
 	public static final String LOG_TAG = "PathView";
 
-	/* Huge rectangle to bound all possible paths */
-	private Region clip = new Region(0, 0, 10000, 10000);
-	/* Define the region */
-	private final Region region = new Region();
+	private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-	private Paint paint;
-	private int pathColor;
-	private float pathWidth;
+	private final SvgUtils mSvg = new SvgUtils(paint);
 
 	private float progress = 0f;
 
 	private int svgResourceId;
-	private List<Path> paths;
-
+	private List<SvgUtils.SvgPath> mPaths = new ArrayList<SvgUtils.SvgPath>(0);
 	private final Object mSvgLock = new Object();
 	private Thread mLoader;
 
 
 	public PathView(Context context) {
 		this(context, null);
-		init();
 	}
 
 	public PathView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
-		init();
 	}
 
 	public PathView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		paint.setStyle(Paint.Style.STROKE);
 		getFromAttributes(context, attrs);
 		init();
 	}
@@ -62,8 +51,8 @@ public class PathView extends View {
 		final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PathView);
 		try {
 			if (a != null) {
-				pathColor = a.getColor(R.styleable.PathView_pathColor, 0xff00ff00);
-				pathWidth = a.getFloat(R.styleable.PathView_pathWidth, 8.0f);
+				paint.setColor(a.getColor(R.styleable.PathView_pathColor, 0xff00ff00));
+				paint.setStrokeWidth(a.getFloat(R.styleable.PathView_pathWidth, 8.0f));
 				svgResourceId = a.getResourceId(R.styleable.PathView_svg, 0);
 			}
 		} finally {
@@ -75,31 +64,45 @@ public class PathView extends View {
 
 
 	private void init() {
-		paint = new Paint();
-		paint.setColor(pathColor);
-		paint.setStyle(Paint.Style.STROKE);
-		paint.setStrokeWidth(pathWidth);
-		paint.setAntiAlias(true);
 
-		setPath(new Path());
 	}
 
 	public void setPaths(List<Path> paths) {
-		this.paths = paths;
-
+		for (Path path : paths) {
+			mPaths.add(new SvgUtils.SvgPath(path, paint));
+		}
+		synchronized (mSvgLock) {
+			updatePathsPhaseLocked();
+		}
 	}
 
 	public void setPath(Path p) {
-		this.paths = Arrays.asList(p);
+		mPaths.add(new SvgUtils.SvgPath(p, paint));
+		synchronized (mSvgLock) {
+			updatePathsPhaseLocked();
+		}
 	}
 
 
 	public void setPercentage(float percentage) {
 		if (percentage < 0.0f || percentage > 1.0f)
 			throw new IllegalArgumentException("setPercentage not between 0.0f and 1.0f");
-
 		progress = percentage;
+		synchronized (mSvgLock) {
+			updatePathsPhaseLocked();
+		}
 		invalidate();
+	}
+
+	private void updatePathsPhaseLocked() {
+		final int count = mPaths.size();
+		for (int i = 0; i < count; i++) {
+			SvgUtils.SvgPath svgPath = mPaths.get(i);
+			svgPath.path.reset();
+			svgPath.measure.getSegment(0.0f, svgPath.length * progress, svgPath.path, true);
+			// Required only for Android 4.4 and earlier
+			svgPath.path.rLineTo(0.0f, 0.0f);
+		}
 	}
 
 	@Override
@@ -110,26 +113,19 @@ public class PathView extends View {
 		synchronized (mSvgLock) {
 			canvas.save();
 			canvas.translate(getPaddingLeft(), getPaddingTop());
-			final int count = paths.size();
+			final int count = mPaths.size();
 			for (int i = 0; i < count; i++) {
-				final Path path = paths.get(i);
-				updatePathAndPaint(path);
-				canvas.drawPath(path, paint);
+				final SvgUtils.SvgPath svgPath = mPaths.get(i);
+				canvas.drawPath(svgPath.path, svgPath.paint);
 			}
 			canvas.restore();
 		}
 	}
 
-	private void updatePathAndPaint(Path path) {
-		final PathMeasure measure = new PathMeasure(path, false);
-		float pathLength = measure.getLength();
-		final PathEffect pathEffect = new DashPathEffect(new float[]{pathLength, pathLength}, (pathLength - pathLength * progress));
-		paint.setPathEffect(pathEffect);
-	}
-
 	@Override
 	protected void onSizeChanged(final int w, final int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
+
 		if (mLoader != null) {
 			try {
 				mLoader.join();
@@ -137,31 +133,44 @@ public class PathView extends View {
 				Log.e(LOG_TAG, "Unexpected error", e);
 			}
 		}
+		if (svgResourceId != 0) {
+			mLoader = new Thread(new Runnable() {
+				@Override
+				public void run() {
 
-		mLoader = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				synchronized (mSvgLock) {
-					if (svgResourceId != 0) {
-						paths = SVGUtils.getPathsFromSvg(getContext(), svgResourceId, w, h);
+					mSvg.load(getContext(), svgResourceId);
+
+					synchronized (mSvgLock) {
+						mPaths = mSvg.getPathsForViewport(
+								w - getPaddingLeft() - getPaddingRight(),
+								h - getPaddingTop() - getPaddingBottom());
+						updatePathsPhaseLocked();
 					}
-				}
-			}
-		}, "SVG Loader");
-		mLoader.start();
 
+				}
+			}, "SVG Loader");
+			mLoader.start();
+		}
 	}
 
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		if (svgResourceId != 0) {
+			int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+			int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+			setMeasuredDimension(widthSize, heightSize);
+			return;
+		}
+
+
 		int desiredWidth = 0;
 		int desiredHeight = 0;
-		for (Path path : paths) {
-			region.setPath(path, clip);
-			desiredWidth += region.getBounds().left + region.getBounds().width() + pathWidth;
-			desiredHeight += region.getBounds().top + region.getBounds().height() + pathWidth;
+		final float strokeWidth = paint.getStrokeWidth() / 2;
+		for (SvgUtils.SvgPath path : mPaths) {
+			desiredWidth += path.bounds.left + path.bounds.width() + strokeWidth;
+			desiredHeight += path.bounds.top + path.bounds.height() + strokeWidth;
 
 		}
 		int widthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -173,17 +182,11 @@ public class PathView extends View {
 
 		if (widthMode == MeasureSpec.AT_MOST) {
 			measuredWidth = desiredWidth;
-			if (svgResourceId != 0) {
-				throw new IllegalStateException("AnimatedPathView cannot have a WRAP_CONTENT property");
-			}
 		} else
 			measuredWidth = widthSize;
 
 		if (heightMode == MeasureSpec.AT_MOST) {
 			measuredHeight = desiredHeight;
-			if (svgResourceId != 0) {
-				throw new IllegalStateException("AnimatedPathView cannot have a WRAP_CONTENT property");
-			}
 		} else
 			measuredHeight = heightSize;
 
@@ -202,21 +205,20 @@ public class PathView extends View {
 	}
 
 	public int getPathColor() {
-		return pathColor;
+		return paint.getColor();
 	}
 
 
 	public void setPathColor(final int color) {
-		pathColor = color;
-		paint.setColor(pathColor);
+		paint.setColor(color);
 	}
 
 	public float getPathWidth() {
-		return pathWidth;
+		return paint.getStrokeWidth();
 	}
 
 	public void setPathWidth(final float width) {
-		pathWidth = width;
+		paint.setStrokeWidth(width);
 	}
 
 	public int getSvgResource() {
@@ -225,6 +227,5 @@ public class PathView extends View {
 
 	public void setSvgResource(int svgResource) {
 		svgResourceId = svgResource;
-		invalidate();
 	}
 }

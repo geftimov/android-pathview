@@ -8,10 +8,10 @@
 
     <com.eftimoff.androipathview.PathView xmlns:app="http://schemas.android.com/apk/res-auto"
                                           android:id="@+id/pathView"
-                                          android:layout_width="150dp"
-                                          android:layout_height="150dp"
+                                          android:layout_width="300dp"
+                                          android:layout_height="300dp"
+                                          app:svg="@raw/map_usa"
                                           app:pathColor="@android:color/white"
-                                          app:svg="@raw/settings"
-                                          app:pathWidth="3"/>
+                                          app:pathWidth="5"/>
 
 </LinearLayout>
