@@ -20,12 +20,6 @@ Animate the "procentage" property to make the animation.
         app:pathWidth="5"/>
         
 
-In Code    
-    
-```
-pathView.animatePath(700);
-```
-
 Result
 
 ![svg](https://github.com/geftimov/android-pathview/blob/master/art/settings.gif) 
@@ -55,7 +49,6 @@ final Path path = new Path();
 	path.close();	
 	
 pathView.setPath(path);
-pathView.animatePath(700);
 ```
 
 Result
@@ -80,7 +73,7 @@ Make and pull - request and we can discuss it.
 ### Download
 
 	dependencies {
-		compile 'com.eftimoff:android-pathview:1.0.1@aar'
+		compile 'com.eftimoff:android-pathview:1.0.2@aar'
 	}
 
 ## Licence

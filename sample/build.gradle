@@ -14,6 +14,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:21.0.2'
-    compile 'com.eftimoff:android-pathview:1.0.1@aar'
+    compile 'com.android.support:appcompat-v7:21.0.3'
+//    compile 'com.eftimoff:android-pathview:1.0.1@aar'
+    compile project(':android-pathview')
 }
