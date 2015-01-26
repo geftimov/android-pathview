@@ -25,6 +25,8 @@ public class PathView extends View {
 	private final SvgUtils mSvg = new SvgUtils(paint);
 
 	private float progress = 0f;
+	
+	private long delay = 0l;
 
 	private int svgResourceId;
 	private List<SvgUtils.SvgPath> mPaths = new ArrayList<SvgUtils.SvgPath>(0);
@@ -192,6 +194,10 @@ public class PathView extends View {
 
 		setMeasuredDimension(measuredWidth, measuredHeight);
 	}
+	
+	public void setDelay(long value){
+		delay = value;
+    	}
 
 	public void animatePath(int duration) {
 		animatePath(duration, new LinearInterpolator());
@@ -201,6 +207,7 @@ public class PathView extends View {
 		final ObjectAnimator anim = ObjectAnimator.ofFloat(this, "percentage", 0.0f, 1.0f);
 		anim.setDuration(duration);
 		anim.setInterpolator(interpolator);
+		anim.setStartDelay(delay);
 		anim.start();
 	}
 
