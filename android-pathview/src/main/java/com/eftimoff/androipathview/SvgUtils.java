@@ -10,93 +10,156 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.util.Log;
+
 import com.caverock.androidsvg.PreserveAspectRatio;
 import com.caverock.androidsvg.SVG;
 import com.caverock.androidsvg.SVGParseException;
+
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Util class to init and get paths from svg.
+ */
 public class SvgUtils {
-  private static final String LOG_TAG = "SVG";
+    /**
+     * It is for logging purposes.
+     */
+    private static final String LOG_TAG = "SVGUtils";
+    /**
+     * All the paths with their attributes from the svg.
+     */
+    private final List<SvgPath> mPaths = new ArrayList<SvgPath>();
+    /**
+     * The paint provided from the view.
+     */
+    private final Paint mSourcePaint;
+    /**
+     * The init svg.
+     */
+    private SVG mSvg;
 
-  private final List<SvgPath> mPaths = new ArrayList<SvgPath>();
-  private final Paint mSourcePaint;
-
-  private SVG mSvg;
-
-  public SvgUtils(Paint sourcePaint) {
-    mSourcePaint = sourcePaint;
-  }
-
-  public void load(Context context, int svgResource) {
-    if (mSvg != null) return;
-    try {
-      mSvg = SVG.getFromResource(context, svgResource);
-      mSvg.setDocumentPreserveAspectRatio(PreserveAspectRatio.UNSCALED);
-    } catch (SVGParseException e) {
-      Log.e(LOG_TAG, "Could not load specified SVG resource", e);
+    /**
+     * Init the SVGUtils with a paint for coloring.
+     *
+     * @param sourcePaint - the paint for the coloring.
+     */
+    public SvgUtils(final Paint sourcePaint) {
+        mSourcePaint = sourcePaint;
     }
-  }
 
-  public List<SvgPath> getPathsForViewport(final int width, final int height) {
-
-    Canvas canvas = new Canvas() {
-      private final Matrix mMatrix = new Matrix();
-
-      @Override
-      public int getWidth() {
-        return width;
-      }
-
-      @Override
-      public int getHeight() {
-        return height;
-      }
-
-      @Override
-      public void drawPath(Path path, Paint paint) {
-        Path dst = new Path();
-
-        //noinspection deprecation
-        getMatrix(mMatrix);
-        path.transform(mMatrix, dst);
-
-        mPaths.add(new SvgPath(dst, new Paint(mSourcePaint)));
-      }
-    };
-
-    RectF viewBox = mSvg.getDocumentViewBox();
-    float scale = Math.min(width / viewBox.width(), height / viewBox.height());
-
-    canvas.translate((width - viewBox.width() * scale) / 2.0f,
-        (height - viewBox.height() * scale) / 2.0f);
-    canvas.scale(scale, scale);
-
-    mSvg.renderToCanvas(canvas);
-
-    return mPaths;
-  }
-
-  public static class SvgPath {
-    private static final Region REGION = new Region();
-    private static final Region MAX_CLIP =
-        new Region(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
-
-    final Path path;
-    final Paint paint;
-    final float length;
-    final Rect bounds;
-    final PathMeasure measure;
-
-    SvgPath(Path path, Paint paint) {
-      this.path = path;
-      this.paint = paint;
-
-      measure = new PathMeasure(path, false);
-      this.length = measure.getLength();
-
-      REGION.setPath(path, MAX_CLIP);
-      bounds = REGION.getBounds();
+    /**
+     * Loading the svg from the resources.
+     *
+     * @param context     Context object to get the resources.
+     * @param svgResource int resource id of the svg.
+     */
+    public void load(Context context, int svgResource) {
+        if (mSvg != null) return;
+        try {
+            mSvg = SVG.getFromResource(context, svgResource);
+            mSvg.setDocumentPreserveAspectRatio(PreserveAspectRatio.UNSCALED);
+        } catch (SVGParseException e) {
+            Log.e(LOG_TAG, "Could not load specified SVG resource", e);
+        }
     }
-  }
+
+    /**
+     * Render the svg to canvas and catch all the paths while rendering.
+     *
+     * @param width  - the width to scale down the view to,
+     * @param height - the height to scale down the view to,
+     * @return All the paths from the svg.
+     */
+    public List<SvgPath> getPathsForViewport(final int width, final int height) {
+
+        Canvas canvas = new Canvas() {
+            private final Matrix mMatrix = new Matrix();
+
+            @Override
+            public int getWidth() {
+                return width;
+            }
+
+            @Override
+            public int getHeight() {
+                return height;
+            }
+
+            @Override
+            public void drawPath(Path path, Paint paint) {
+                Path dst = new Path();
+
+                //noinspection deprecation
+                getMatrix(mMatrix);
+                path.transform(mMatrix, dst);
+
+                mPaths.add(new SvgPath(dst, new Paint(mSourcePaint)));
+            }
+        };
+
+        final RectF viewBox = mSvg.getDocumentViewBox();
+        final float scale = Math.min(width / viewBox.width(), height / viewBox.height());
+
+        canvas.translate((width - viewBox.width() * scale) / 2.0f,
+                (height - viewBox.height() * scale) / 2.0f);
+        canvas.scale(scale, scale);
+
+        mSvg.renderToCanvas(canvas);
+
+        return mPaths;
+    }
+
+    /**
+     * Path with bounds for scalling , length and paint.
+     */
+    public static class SvgPath {
+        /**
+         * Region of the path.
+         */
+        private static final Region REGION = new Region();
+        /**
+         * This is done for clipping the bounds of the path.
+         */
+        private static final Region MAX_CLIP =
+                new Region(Integer.MIN_VALUE, Integer.MIN_VALUE,
+                        Integer.MAX_VALUE, Integer.MAX_VALUE);
+        /**
+         * The path itself.
+         */
+        final Path path;
+        /**
+         * The paint to be drawn later.
+         */
+        final Paint paint;
+        /**
+         * The length of the path.
+         */
+        final float length;
+        /**
+         * The bounds of the path.
+         */
+        final Rect bounds;
+        /**
+         * The measure of the path, we can use it later to get segment of it.
+         */
+        final PathMeasure measure;
+
+        /**
+         * Constructor to add the path and the paint.
+         *
+         * @param path  The path that comes from the rendered svg.
+         * @param paint The result paint.
+         */
+        SvgPath(Path path, Paint paint) {
+            this.path = path;
+            this.paint = paint;
+
+            measure = new PathMeasure(path, false);
+            this.length = measure.getLength();
+
+            REGION.setPath(path, MAX_CLIP);
+            bounds = REGION.getBounds();
+        }
+    }
 }

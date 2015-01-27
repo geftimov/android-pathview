@@ -55,6 +55,16 @@ Result
 
 ![path](https://github.com/geftimov/android-pathview/blob/master/art/path.gif)  
 
+#### 3. Use the animator
+
+    pathView.getPathAnimator().
+        delay(100).
+        duration(500).
+        listenerStart(new AnimationListenerStart()).
+        listenerEnd(new AnimationListenerEnd()).
+        interpolator(new AccelerateDecelerateInterpolator()).
+        start();
+
 ### Limitations
 
 When working with SVGs you can not WRAP_CONTENT your views.
