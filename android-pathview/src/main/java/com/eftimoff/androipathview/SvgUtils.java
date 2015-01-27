@@ -10,97 +10,93 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.util.Log;
-
 import com.caverock.androidsvg.PreserveAspectRatio;
 import com.caverock.androidsvg.SVG;
 import com.caverock.androidsvg.SVGParseException;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class SvgUtils {
-	private static final String LOG_TAG = "SVG";
+  private static final String LOG_TAG = "SVG";
 
-	private final List<SvgPath> mPaths = new ArrayList<SvgPath>();
-	private final Paint mSourcePaint;
+  private final List<SvgPath> mPaths = new ArrayList<SvgPath>();
+  private final Paint mSourcePaint;
 
-	private SVG mSvg;
+  private SVG mSvg;
 
-	public SvgUtils(Paint sourcePaint) {
-		mSourcePaint = sourcePaint;
-	}
+  public SvgUtils(Paint sourcePaint) {
+    mSourcePaint = sourcePaint;
+  }
 
-	public void load(Context context, int svgResource) {
-		if (mSvg != null) return;
-		try {
-			mSvg = SVG.getFromResource(context, svgResource);
-			mSvg.setDocumentPreserveAspectRatio(PreserveAspectRatio.UNSCALED);
-		} catch (SVGParseException e) {
-			Log.e(LOG_TAG, "Could not load specified SVG resource", e);
-		}
-	}
+  public void load(Context context, int svgResource) {
+    if (mSvg != null) return;
+    try {
+      mSvg = SVG.getFromResource(context, svgResource);
+      mSvg.setDocumentPreserveAspectRatio(PreserveAspectRatio.UNSCALED);
+    } catch (SVGParseException e) {
+      Log.e(LOG_TAG, "Could not load specified SVG resource", e);
+    }
+  }
 
-	public static class SvgPath {
-		private static final Region sRegion = new Region();
-		private static final Region sMaxClip = new Region(
-				Integer.MIN_VALUE, Integer.MIN_VALUE,
-				Integer.MAX_VALUE, Integer.MAX_VALUE);
+  public List<SvgPath> getPathsForViewport(final int width, final int height) {
 
-		final Path path;
-		final Paint paint;
-		final float length;
-		final Rect bounds;
-		final PathMeasure measure;
+    Canvas canvas = new Canvas() {
+      private final Matrix mMatrix = new Matrix();
 
-		SvgPath(Path path, Paint paint) {
-			this.path = path;
-			this.paint = paint;
+      @Override
+      public int getWidth() {
+        return width;
+      }
 
-			measure = new PathMeasure(path, false);
-			this.length = measure.getLength();
+      @Override
+      public int getHeight() {
+        return height;
+      }
 
-			sRegion.setPath(path, sMaxClip);
-			bounds = sRegion.getBounds();
-		}
-	}
+      @Override
+      public void drawPath(Path path, Paint paint) {
+        Path dst = new Path();
 
-	public List<SvgPath> getPathsForViewport(final int width, final int height) {
+        //noinspection deprecation
+        getMatrix(mMatrix);
+        path.transform(mMatrix, dst);
 
-		Canvas canvas = new Canvas() {
-			private final Matrix mMatrix = new Matrix();
+        mPaths.add(new SvgPath(dst, new Paint(mSourcePaint)));
+      }
+    };
 
-			@Override
-			public int getWidth() {
-				return width;
-			}
+    RectF viewBox = mSvg.getDocumentViewBox();
+    float scale = Math.min(width / viewBox.width(), height / viewBox.height());
 
-			@Override
-			public int getHeight() {
-				return height;
-			}
+    canvas.translate((width - viewBox.width() * scale) / 2.0f,
+        (height - viewBox.height() * scale) / 2.0f);
+    canvas.scale(scale, scale);
 
-			@Override
-			public void drawPath(Path path, Paint paint) {
-				Path dst = new Path();
+    mSvg.renderToCanvas(canvas);
 
-				//noinspection deprecation
-				getMatrix(mMatrix);
-				path.transform(mMatrix, dst);
+    return mPaths;
+  }
 
-				mPaths.add(new SvgPath(dst, new Paint(mSourcePaint)));
-			}
-		};
+  public static class SvgPath {
+    private static final Region REGION = new Region();
+    private static final Region MAX_CLIP =
+        new Region(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
 
-		RectF viewBox = mSvg.getDocumentViewBox();
-		float scale = Math.min(width / viewBox.width(), height / viewBox.height());
+    final Path path;
+    final Paint paint;
+    final float length;
+    final Rect bounds;
+    final PathMeasure measure;
 
-		canvas.translate(
-				(width - viewBox.width() * scale) / 2.0f,
-				(height - viewBox.height() * scale) / 2.0f);
-		canvas.scale(scale, scale);
+    SvgPath(Path path, Paint paint) {
+      this.path = path;
+      this.paint = paint;
 
-		mSvg.renderToCanvas(canvas);
+      measure = new PathMeasure(path, false);
+      this.length = measure.getLength();
 
-		return mPaths;
-	}
+      REGION.setPath(path, MAX_CLIP);
+      bounds = REGION.getBounds();
+    }
+  }
 }
