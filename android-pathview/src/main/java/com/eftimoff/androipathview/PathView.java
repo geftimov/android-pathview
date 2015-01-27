@@ -61,6 +61,11 @@ public class PathView extends View {
     private float progress = 0f;
 
     /**
+     * If the used colors are from the svg or from the set color.
+     */
+    private boolean naturalColors;
+
+    /**
      * Default constructor.
      *
      * @param context The Context of the application.
@@ -180,7 +185,9 @@ public class PathView extends View {
             final int count = paths.size();
             for (int i = 0; i < count; i++) {
                 final SvgUtils.SvgPath svgPath = paths.get(i);
-                canvas.drawPath(svgPath.path, svgPath.paint);
+                final Path path = svgPath.path;
+                final Paint paint1 = naturalColors ? svgPath.paint : paint;
+                canvas.drawPath(path, paint1);
             }
             canvas.restore();
         }
@@ -253,6 +260,13 @@ public class PathView extends View {
         }
 
         setMeasuredDimension(measuredWidth, measuredHeight);
+    }
+
+    /**
+     * If you want to use the colors from the svg.
+     */
+    public void useNaturalColors() {
+        naturalColors = true;
     }
 
     /**

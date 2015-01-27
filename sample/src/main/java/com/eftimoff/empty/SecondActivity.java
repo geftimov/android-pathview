@@ -18,6 +18,7 @@ public class SecondActivity extends ActionBarActivity {
         final PathView pathView = (PathView) findViewById(R.id.pathView);
 //        final Path path = makeConvexArrow(50, 100);
 //        pathView.setPath(path);
+        pathView.useNaturalColors();
         pathView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

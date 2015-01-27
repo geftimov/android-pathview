@@ -37,16 +37,16 @@ Result
 
 In Code    
     
-```
-final Path path = new Path();
-    path.moveTo(0.0f, 0.0f);
-    path.lineTo(length / 4f, 0.0f);
-    path.lineTo(length, height / 2.0f);
-    path.lineTo(length / 4f, height);
-    path.lineTo(0.0f, height);
-	path.lineTo(length * 3f / 4f, height / 2f);
-	path.lineTo(0.0f, 0.0f);
-	path.close();	
+```java
+    final Path path = new Path();
+        path.moveTo(0.0f, 0.0f);
+        path.lineTo(length / 4f, 0.0f);
+        path.lineTo(length, height / 2.0f);
+        path.lineTo(length / 4f, height);
+        path.lineTo(0.0f, height);
+	    path.lineTo(length * 3f / 4f, height / 2f);
+	    path.lineTo(0.0f, 0.0f);
+	    path.close();
 	
 pathView.setPath(path);
 ```
@@ -55,7 +55,7 @@ Result
 
 ![path](https://github.com/geftimov/android-pathview/blob/master/art/path.gif)  
 
-#### 3. Use the animator
+#### Use the animator
 
     pathView.getPathAnimator().
         delay(100).
@@ -64,29 +64,33 @@ Result
         listenerEnd(new AnimationListenerEnd()).
         interpolator(new AccelerateDecelerateInterpolator()).
         start();
+        
+#### If you want to use the svg colors.
 
-### Limitations
+    pathView.useNaturalColors();
+
+##### Limitations
 
 When working with SVGs you can not WRAP_CONTENT your views.
 
-### Thanks to
+##### Thanks to
 
 * https://github.com/romainguy/road-trip
 * http://www.curious-creature.com/2013/12/21/android-recipe-4-path-tracing/
 * https://github.com/matthewrkula/AnimatedPathView
 
-### Contributors
+##### Contributors
 
 I want to update this library and make it better. So any help will be appreciated.
 Make and pull - request and we can discuss it.
 
-### Download
+##### Download
 
 	dependencies {
 		compile 'com.eftimoff:android-pathview:1.0.2@aar'
 	}
 
-## Licence
+##### Licence
 
     Copyright 2015 Georgi Eftimov
 

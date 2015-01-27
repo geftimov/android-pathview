@@ -93,8 +93,11 @@ public class SvgUtils {
                 //noinspection deprecation
                 getMatrix(mMatrix);
                 path.transform(mMatrix, dst);
-
-                mPaths.add(new SvgPath(dst, new Paint(mSourcePaint)));
+                final Paint paintOut = new Paint(Paint.ANTI_ALIAS_FLAG);
+                paintOut.setStyle(Paint.Style.STROKE);
+                paintOut.setColor(paint.getColor());
+                paintOut.setStrokeWidth(mSourcePaint.getStrokeWidth());
+                mPaths.add(new SvgPath(dst, paintOut));
             }
         };
 
