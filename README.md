@@ -57,13 +57,13 @@ Result
 
 #### Use the animator
 
-    pathView.getPathAnimator().
-        delay(100).
-        duration(500).
-        listenerStart(new AnimationListenerStart()).
-        listenerEnd(new AnimationListenerEnd()).
-        interpolator(new AccelerateDecelerateInterpolator()).
-        start();
+    pathView.getPathAnimator()
+        .delay(100)
+        .duration(500)
+        .listenerStart(new AnimationListenerStart())
+        .listenerEnd(new AnimationListenerEnd())
+        .interpolator(new AccelerateDecelerateInterpolator())
+        .start();
         
 #### If you want to use the svg colors.
 
