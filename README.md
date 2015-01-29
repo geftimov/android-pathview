@@ -10,7 +10,7 @@ Animate the "procentage" property to make the animation.
 
 ### There are two types of paths :
 
-#### 1. From Svg 
+#### 1. From Svg  
 
     <com.eftimoff.androipathview.PathView
     	xmlns:app="http://schemas.android.com/apk/res-auto"
