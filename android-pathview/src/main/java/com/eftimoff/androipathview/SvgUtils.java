@@ -72,7 +72,7 @@ public class SvgUtils {
      * @return All the paths from the svg.
      */
     public List<SvgPath> getPathsForViewport(final int width, final int height) {
-
+        final int strokeWidth = (int) mSourcePaint.getStrokeWidth();
         Canvas canvas = new Canvas() {
             private final Matrix mMatrix = new Matrix();
 
@@ -93,16 +93,18 @@ public class SvgUtils {
                 //noinspection deprecation
                 getMatrix(mMatrix);
                 path.transform(mMatrix, dst);
-                final Paint paintOut = new Paint(Paint.ANTI_ALIAS_FLAG);
-                paintOut.setStyle(Paint.Style.STROKE);
-                paintOut.setColor(paint.getColor());
-                paintOut.setStrokeWidth(mSourcePaint.getStrokeWidth());
-                mPaths.add(new SvgPath(dst, paintOut));
+                paint.setAntiAlias(true);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(strokeWidth);
+                mPaths.add(new SvgPath(dst, paint));
             }
         };
 
         final RectF viewBox = mSvg.getDocumentViewBox();
-        final float scale = Math.min(width / viewBox.width(), height / viewBox.height());
+
+        final float scale = Math.min(width
+                        / (viewBox.width() + strokeWidth),
+                height / (viewBox.height() + strokeWidth));
 
         canvas.translate((width - viewBox.width() * scale) / 2.0f,
                 (height - viewBox.height() * scale) / 2.0f);

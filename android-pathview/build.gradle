@@ -2,25 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'android-library'
 apply plugin: 'maven'
 apply plugin: 'signing'
-apply plugin: 'checkstyle'
 
-task checkstyle(type: Checkstyle) {
-  source 'src'
-  include '**/*.java'
-  exclude '**/gen/**'
-  exclude '**/R.java'
-  exclude '**/BuildConfig.java'
-
-  def configProps = ['proj.module.dir': projectDir.absolutePath]
-  configProperties configProps
-
-  // empty classpath
-  classpath = files()
-}
-
-preBuild.dependsOn('checkstyle')
-
-version = "1.0.3"
+version = "1.0.4"
 group = "com.eftimoff"
 
 android {
