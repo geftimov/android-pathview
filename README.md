@@ -21,7 +21,7 @@ Animate the "procentage" property to make the animation.
         app:svg="@raw/settings"
         app:pathWidth="5"/>
         
-Result
+Result 
 
 ![svg](https://github.com/geftimov/android-pathview/blob/master/art/settings.gif) 
 
