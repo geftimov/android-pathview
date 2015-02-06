@@ -69,6 +69,11 @@ Result
 #### If you want to use the svg colors.
 
     pathView.useNaturalColors();
+    
+#### TODO
+
+1. Make fillafter for better visual effect.Like this:
+http://callmenick.com/tutorial-demos/draw-fill-svg/
 
 ##### Limitations
 
