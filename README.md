@@ -93,7 +93,7 @@ Make and pull - request and we can discuss it.
 ##### Download
 
 	dependencies {
-		compile 'com.eftimoff:android-pathview:1.0.4@aar'
+		compile 'com.eftimoff:android-pathview:1.0.5@aar'
 	}
 
 ##### Licence
