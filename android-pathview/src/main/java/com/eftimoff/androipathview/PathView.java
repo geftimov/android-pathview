@@ -64,6 +64,18 @@ public class PathView extends View {
      * If the used colors are from the svg or from the set color.
      */
     private boolean naturalColors;
+    /**
+     * If the view is filled with its natural colors after path drawing.
+     */
+    private boolean fillAfter;
+    /**
+     * The width of the view.
+     */
+    private int width;
+    /**
+     * The height of the view.
+     */
+    private int height;
 
     /**
      * Default constructor.
@@ -189,7 +201,19 @@ public class PathView extends View {
                 final Paint paint1 = naturalColors ? svgPath.paint : paint;
                 canvas.drawPath(path, paint1);
             }
+            fillAfter(canvas);
             canvas.restore();
+        }
+    }
+
+    /**
+     * If there is svg , the user called setFillAfter(true) and the progress is finished.
+     *
+     * @param canvas Draw to this canvas.
+     */
+    private void fillAfter(final Canvas canvas) {
+        if (svgResourceId != 0 && fillAfter && progress == 1f) {
+            svgUtils.drawSvgAfter(canvas, width, height);
         }
     }
 
@@ -212,9 +236,9 @@ public class PathView extends View {
                     svgUtils.load(getContext(), svgResourceId);
 
                     synchronized (mSvgLock) {
-                        paths = svgUtils.getPathsForViewport(w
-                                        - getPaddingLeft() - getPaddingRight(),
-                                h - getPaddingTop() - getPaddingBottom());
+                        width = w - getPaddingLeft() - getPaddingRight();
+                        height = h - getPaddingTop() - getPaddingBottom();
+                        paths = svgUtils.getPathsForViewport(width, height);
                         updatePathsPhaseLocked();
                     }
                 }
@@ -260,6 +284,15 @@ public class PathView extends View {
         }
 
         setMeasuredDimension(measuredWidth, measuredHeight);
+    }
+
+    /**
+     * If the real svg need to be drawn after the path animation.
+     *
+     * @param fillAfter - boolean if the view needs to be filled after path animation.
+     */
+    public void setFillAfter(final boolean fillAfter) {
+        this.fillAfter = fillAfter;
     }
 
     /**

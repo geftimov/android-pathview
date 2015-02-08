@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1330" height="700" viewBox="0 0 18525 9750" xml:space="preserve">
+  <metadata>
+    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:dc="http://purl.org/dc/elements/1.1/">
+      <rdf:Description about="http://commons.wikimedia.org/wiki/Image:Flag_of_the_United_States.svg" dc:title="Flag of the United States" dc:description="The flag of the United States:     * 50 stars     * In use since 4 July 1960     * Specifications: United States Executive Order 10834     * Designed by Robert Heft in 1958     * Proportions: 19x10     * Colors:         * Cable No. 70180 Old Glory Red, PMS 193C         * Cable No. 70001 White         * Cable No. 70075 Old Glory Blue, PMS 193C     * License: public domain" dc:publisher="Wikimedia Commons" dc:date="2006-04-26" dc:format="image/svg+xml" dc:language="en">
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>flag</rdf:li>
+            <rdf:li>united_states</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:creator>
+          <rdf:Bag>
+            <rdf:li>Daniel McRae</rdf:li>
+            <rdf:li>Dbenbenn</rdf:li>
+            <rdf:li>Zscout370</rdf:li>
+            <rdf:li>Pumbaa80</rdf:li>
+            <rdf:li>jacobolus</rdf:li>
+          </rdf:Bag>
+        </dc:creator>
+      </rdf:Description>
+    </rdf:RDF>
+  </metadata>
+  <defs>
+    <g id="cone">
+      <polygon id="triangle" points="0,0 0,1 .5,1" transform="translate(0,-1) rotate(18)"/>
+      <use xlink:href="#triangle" transform="scale(-1,1)"/>
+    </g>
+    <g id="star" transform="translate(1235,1050) scale(300.3)" fill="white">
+      <use xlink:href="#cone"/>
+      <use xlink:href="#cone" transform="rotate(72)"/>
+      <use xlink:href="#cone" transform="rotate(-72)"/>
+      <use xlink:href="#cone" transform="rotate(144)"/>
+      <use xlink:href="#cone" transform="rotate(-144)"/>
+    </g>
+    <g id="even_star_row">
+      <use id="star 1 even row" xlink:href="#star"/>
+      <use id="star 2 even row" xlink:href="#star" x="1235"/>
+      <use id="star 3 even row" xlink:href="#star" x="2470"/>
+      <use id="star 4 even row" xlink:href="#star" x="3705"/>
+      <use id="star 5 even row" xlink:href="#star" x="4940"/>
+    </g>
+    <g id="odd_star_row">
+      <use id="last 5 stars odd row" xlink:href="#even_star_row" x="617.5" y="-525"/>
+      <use id="star 1 odd row" xlink:href="#star" x="-617.5" y="-525"/>
+    </g>
+  </defs>
+  <g id="Flag of the United States">
+    <rect width="100%" height="100%" fill="#bf0a30" id="red background"/>
+    <g id="white stripes" fill="white">
+      <rect id="stripe 2" width="100%" height="750" y="750"/>
+      <rect id="stripe 4" width="100%" height="750" y="2250"/>
+      <rect id="stripe 6" width="100%" height="750" y="3750"/>
+      <rect id="stripe 8" width="100%" height="750" y="5250"/>
+      <rect id="stripe 10" width="100%" height="750" y="6750"/>
+      <rect id="stripe 12" width="100%" height="750" y="8250"/>
+    </g>
+    <rect id="blue field" fill="#002868" width="7410" height="5250"/>
+    <g id="white stars">
+      <g id="star_rows_1-2">
+        <use id="star_row_1" xlink:href="#odd_star_row"/>
+        <use id="star_row_2" xlink:href="#even_star_row"/>
+      </g>
+      <use id="star rows 3-4" xlink:href="#star_rows_1-2" y="1050"/>
+      <use id="star rows 5-6" xlink:href="#star_rows_1-2" y="2100"/>
+      <use id="star rows 7-8" xlink:href="#star_rows_1-2" y="3150"/>
+      <use id="star row 9" xlink:href="#odd_star_row" y="4200"/>
+    </g>
+  </g>
+</svg>

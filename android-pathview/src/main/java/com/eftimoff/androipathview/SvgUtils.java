@@ -65,6 +65,18 @@ public class SvgUtils {
     }
 
     /**
+     * Draw the svg to the canvas.
+     *
+     * @param canvas The canvas to be drawn.
+     * @param width  The width of the canvas.
+     * @param height The height of the canvas.
+     */
+    public void drawSvgAfter(final Canvas canvas, final int width, final int height) {
+        final int strokeWidth = (int) mSourcePaint.getStrokeWidth();
+        rescaleCanvas(width, height, strokeWidth, canvas);
+    }
+
+    /**
      * Render the svg to canvas and catch all the paths while rendering.
      *
      * @param width  - the width to scale down the view to,
@@ -100,6 +112,20 @@ public class SvgUtils {
             }
         };
 
+        rescaleCanvas(width, height, strokeWidth, canvas);
+
+        return mPaths;
+    }
+
+    /**
+     * Rescale the canvas with specific width and height.
+     *
+     * @param width       The width of the canvas.
+     * @param height      The height of the canvas.
+     * @param strokeWidth Width of the path to add to scaling.
+     * @param canvas      The canvas to be drawn.
+     */
+    private void rescaleCanvas(int width, int height, int strokeWidth, Canvas canvas) {
         final RectF viewBox = mSvg.getDocumentViewBox();
 
         final float scale = Math.min(width
@@ -111,8 +137,6 @@ public class SvgUtils {
         canvas.scale(scale, scale);
 
         mSvg.renderToCanvas(canvas);
-
-        return mPaths;
     }
 
     /**

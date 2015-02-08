@@ -68,10 +68,14 @@ Result
 
     pathView.useNaturalColors();
     
+#### If you want to draw the real SVG after the path animation. 
+It is in still in development.
+    
+    pathView.setFillAfter(true);
+    
 #### TODO
 
-1. Make fillafter for better visual effect.Like this:
-http://callmenick.com/tutorial-demos/draw-fill-svg/
+1. Make persistent "percentage" field on orientation change.
 
 ##### Limitations
 
@@ -91,7 +95,7 @@ Make and pull - request and we can discuss it.
 ##### Download
 
 	dependencies {
-		compile 'com.eftimoff:android-pathview:1.0.5@aar'
+		compile 'com.eftimoff:android-pathview:1.0.6@aar'
 	}
 
 ##### Licence
