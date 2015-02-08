@@ -11,6 +11,7 @@
         android:id="@+id/pathView"
         android:layout_width="350dp"
         android:layout_height="350dp"
+        app:svg="@raw/monitor"
         app:pathColor="@android:color/white"
         app:pathWidth="2"/>
 
