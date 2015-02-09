@@ -73,7 +73,7 @@ It is in still in development.
     
     pathView.setFillAfter(true);
     
-![path](https://github.com/geftimov/android-pathview/blob/master/art/fill-after-resize.gif)
+![path](https://github.com/geftimov/android-pathview/blob/master/art/fill-after-resize-new.gif)
     
 #### TODO
 
