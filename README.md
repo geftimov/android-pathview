@@ -52,7 +52,7 @@ pathView.setPath(path);
 
 Result
 
-![path](https://github.com/geftimov/android-pathview/blob/master/art/path.gif)  
+![svg](https://github.com/geftimov/android-pathview/blob/master/art/path.gif)
 
 #### Use the animator
 
@@ -72,6 +72,8 @@ Result
 It is in still in development.
     
     pathView.setFillAfter(true);
+    
+![path](https://github.com/geftimov/android-pathview/blob/master/art/fill-after-resize.gif)
     
 #### TODO
 

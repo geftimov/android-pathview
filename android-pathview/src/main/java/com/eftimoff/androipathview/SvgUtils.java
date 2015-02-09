@@ -72,7 +72,7 @@ public class SvgUtils {
      * @param height The height of the canvas.
      */
     public void drawSvgAfter(final Canvas canvas, final int width, final int height) {
-        final int strokeWidth = (int) mSourcePaint.getStrokeWidth();
+        final float strokeWidth = mSourcePaint.getStrokeWidth();
         rescaleCanvas(width, height, strokeWidth, canvas);
     }
 
@@ -84,7 +84,7 @@ public class SvgUtils {
      * @return All the paths from the svg.
      */
     public List<SvgPath> getPathsForViewport(final int width, final int height) {
-        final int strokeWidth = (int) mSourcePaint.getStrokeWidth();
+        final float strokeWidth = mSourcePaint.getStrokeWidth();
         Canvas canvas = new Canvas() {
             private final Matrix mMatrix = new Matrix();
 
@@ -125,7 +125,7 @@ public class SvgUtils {
      * @param strokeWidth Width of the path to add to scaling.
      * @param canvas      The canvas to be drawn.
      */
-    private void rescaleCanvas(int width, int height, int strokeWidth, Canvas canvas) {
+    private void rescaleCanvas(int width, int height, float strokeWidth, Canvas canvas) {
         final RectF viewBox = mSvg.getDocumentViewBox();
 
         final float scale = Math.min(width
