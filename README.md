@@ -1,6 +1,6 @@
 ## android-pathview
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/geftimov/android-pathview?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-android--pathview-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1421) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.eftimoff/android-pathview/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.eftimoff/android-pathview)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/geftimov/android-pathview?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-android--pathview-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1421) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.eftimoff/android-pathview/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.eftimoff/android-pathview) 
 
 You want to animate svg or normal Paths?<br\>
 Change the color, pathWidth or add svg.<br\>
