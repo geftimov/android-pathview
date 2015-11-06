@@ -126,6 +126,7 @@ public class SvgUtils {
      * @param canvas      The canvas to be drawn.
      */
     private void rescaleCanvas(int width, int height, float strokeWidth, Canvas canvas) {
+        if (mSvg == null) return;
         final RectF viewBox = mSvg.getDocumentViewBox();
 
         final float scale = Math.min(width
