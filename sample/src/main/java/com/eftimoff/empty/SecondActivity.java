@@ -24,6 +24,7 @@ public class SecondActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 pathView.getPathAnimator().
+                //pathView.getSequentialPathAnimator().
                         delay(100).
                         duration(1500).
                         interpolator(new AccelerateDecelerateInterpolator()).
