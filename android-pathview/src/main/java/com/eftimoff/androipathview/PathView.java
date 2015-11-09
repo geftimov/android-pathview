@@ -1,6 +1,7 @@
 package com.eftimoff.androipathview;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -18,9 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * PathView is an View that animate paths.
+ * PathView is a View that animates paths.
  */
-public class PathView extends View {
+@SuppressWarnings("unused")
+public class PathView extends View implements SvgUtils.AnimationStepListener {
     /**
      * Logging tag.
      */
@@ -36,7 +38,7 @@ public class PathView extends View {
     /**
      * All the paths provided to the view. Both from Path and Svg.
      */
-    private List<SvgUtils.SvgPath> paths = new ArrayList<SvgUtils.SvgPath>(0);
+    private List<SvgUtils.SvgPath> paths = new ArrayList<>();
     /**
      * This is a lock before the view is redrawn
      * or resided it must be synchronized with this object.
@@ -52,9 +54,13 @@ public class PathView extends View {
      */
     private int svgResourceId;
     /**
-     * Object that build the animation for the path.
+     * Object that builds the animation for the path.
      */
     private AnimatorBuilder animatorBuilder;
+    /**
+     * Object that builds the animation set for the path.
+     */
+    private AnimatorSetBuilder animatorSetBuilder;
     /**
      * The progress of the drawing.
      */
@@ -315,6 +321,18 @@ public class PathView extends View {
     }
 
     /**
+     * AnimatorSet for the paths of the view to be animated one after the other.
+     *
+     * @return The AnimatorBuilder to build the animation.
+     */
+    public AnimatorSetBuilder getSequentialPathAnimator() {
+        if (animatorSetBuilder == null) {
+            animatorSetBuilder = new AnimatorSetBuilder(this);
+        }
+        return animatorSetBuilder;
+    }
+
+    /**
      * Get the path color.
      *
      * @return The color of the paint.
@@ -527,6 +545,179 @@ public class PathView extends View {
              * Called when the path animation end.
              */
             void onAnimationEnd();
+        }
+    }
+
+    @Override
+    public void onAnimationStep() {
+        invalidate();
+    }
+
+    /**
+     * Object for building the sequential animation of the paths of this view.
+     */
+    public static class AnimatorSetBuilder {
+        /**
+         * Duration of the animation.
+         */
+        private int duration = 1000;
+        /**
+         * Interpolator for the time of the animation.
+         */
+        private Interpolator interpolator;
+        /**
+         * The delay before the animation.
+         */
+        private int delay = 0;
+        /**
+         * List of ObjectAnimator that constructs the animations of each path.
+         */
+        private final List<Animator> animators = new ArrayList<>();
+        /**
+         * Listener called before the animation.
+         */
+        private AnimatorBuilder.ListenerStart listenerStart;
+        /**
+         * Listener after the animation.
+         */
+        private AnimatorBuilder.ListenerEnd animationEnd;
+        /**
+         * Animation listener.
+         */
+        private AnimatorSetBuilder.PathViewAnimatorListener pathViewAnimatorListener;
+        /**
+         * The animator that can animate paths sequentially
+         */
+        private AnimatorSet animatorSet = new AnimatorSet();
+        /**
+         * The list of paths to be animated.
+         */
+        private List<SvgUtils.SvgPath> paths;
+
+        /**
+         * Default constructor.
+         *
+         * @param pathView The view that must be animated.
+         */
+        public AnimatorSetBuilder(final PathView pathView) {
+            paths = pathView.paths;
+            for (SvgUtils.SvgPath path : paths) {
+                path.setAnimationStepListener(pathView);
+                ObjectAnimator animation = ObjectAnimator.ofFloat(path, "length", 0.0f, path.getLength());
+                animators.add(animation);
+            }
+            animatorSet.playSequentially(animators);
+        }
+
+        /**
+         * Sets the duration of the animation. Since the AnimatorSet sets the duration for each
+         * Animator, we have to divide it by the number of paths.
+         *
+         * @param duration - The duration of the animation.
+         * @return AnimatorSetBuilder.
+         */
+        public AnimatorSetBuilder duration(final int duration) {
+            this.duration = duration / paths.size();
+            return this;
+        }
+
+        /**
+         * Set the Interpolator.
+         *
+         * @param interpolator - Interpolator.
+         * @return AnimatorSetBuilder.
+         */
+        public AnimatorSetBuilder interpolator(final Interpolator interpolator) {
+            this.interpolator = interpolator;
+            return this;
+        }
+
+        /**
+         * The delay before the animation.
+         *
+         * @param delay - int the delay
+         * @return AnimatorSetBuilder.
+         */
+        public AnimatorSetBuilder delay(final int delay) {
+            this.delay = delay;
+            return this;
+        }
+
+        /**
+         * Set a listener before the start of the animation.
+         *
+         * @param listenerStart an interface called before the animation
+         * @return AnimatorSetBuilder.
+         */
+        public AnimatorSetBuilder listenerStart(final AnimatorBuilder.ListenerStart listenerStart) {
+            this.listenerStart = listenerStart;
+            if (pathViewAnimatorListener == null) {
+                pathViewAnimatorListener = new PathViewAnimatorListener();
+                animatorSet.addListener(pathViewAnimatorListener);
+            }
+            return this;
+        }
+
+        /**
+         * Set a listener after of the animation.
+         *
+         * @param animationEnd an interface called after the animation
+         * @return AnimatorSetBuilder.
+         */
+        public AnimatorSetBuilder listenerEnd(final AnimatorBuilder.ListenerEnd animationEnd) {
+            this.animationEnd = animationEnd;
+            if (pathViewAnimatorListener == null) {
+                pathViewAnimatorListener = new PathViewAnimatorListener();
+                animatorSet.addListener(pathViewAnimatorListener);
+            }
+            return this;
+        }
+
+        /**
+         * Starts the animation.
+         */
+        public void start() {
+            resetAllPaths();
+            animatorSet.cancel();
+            animatorSet.setDuration(duration);
+            animatorSet.setInterpolator(interpolator);
+            animatorSet.setStartDelay(delay);
+            animatorSet.start();
+        }
+
+        /**
+         * Sets the length of all the paths to 0.
+         */
+        private void resetAllPaths() {
+            for (SvgUtils.SvgPath path : paths) {
+                path.setLength(0);
+            }
+        }
+
+        /**
+         * Animation listener to be able to provide callbacks for the caller.
+         */
+        private class PathViewAnimatorListener implements Animator.AnimatorListener {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                if (listenerStart != null) listenerStart.onAnimationStart();
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (animationEnd != null) animationEnd.onAnimationEnd();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
         }
     }
 }

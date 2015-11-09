@@ -29,7 +29,7 @@ public class SvgUtils {
     /**
      * All the paths with their attributes from the svg.
      */
-    private final List<SvgPath> mPaths = new ArrayList<SvgPath>();
+    private final List<SvgPath> mPaths = new ArrayList<>();
     /**
      * The paint provided from the view.
      */
@@ -144,6 +144,7 @@ public class SvgUtils {
      * Path with bounds for scalling , length and paint.
      */
     public static class SvgPath {
+
         /**
          * Region of the path.
          */
@@ -165,7 +166,11 @@ public class SvgUtils {
         /**
          * The length of the path.
          */
-        final float length;
+        float length;
+        /**
+         * Listener to notify that an animation step has happened.
+         */
+        AnimationStepListener animationStepListener;
         /**
          * The bounds of the path.
          */
@@ -191,5 +196,44 @@ public class SvgUtils {
             REGION.setPath(path, MAX_CLIP);
             bounds = REGION.getBounds();
         }
+
+        /**
+         * Sets the animation step listener.
+         *
+         * @param animationStepListener AnimationStepListener.
+         */
+        public void setAnimationStepListener(AnimationStepListener animationStepListener) {
+            this.animationStepListener = animationStepListener;
+        }
+
+        /**
+         * Sets the length of the path.
+         *
+         * @param length The length to be set.
+         */
+        public void setLength(float length) {
+            path.reset();
+            measure.getSegment(0.0f, length, path, true);
+            path.rLineTo(0.0f, 0.0f);
+
+            if (animationStepListener != null) {
+                animationStepListener.onAnimationStep();
+            }
+        }
+
+        /**
+         * @return The length of the path.
+         */
+        public float getLength() {
+            return length;
+        }
+    }
+
+    public interface AnimationStepListener {
+
+        /**
+         * Called when an animation step happens.
+         */
+        void onAnimationStep();
     }
 }
