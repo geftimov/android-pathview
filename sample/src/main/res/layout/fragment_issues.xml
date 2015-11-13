@@ -10,7 +10,7 @@
         android:id="@+id/pathView"
         android:layout_width="58dp"
         app:pathColor="@android:color/holo_red_dark"
-        app:pathWidth="2"
+        app:pathWidth="2dp"
         app:svg="@raw/issues"
         android:layout_height="58dp"/>
 
