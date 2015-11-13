@@ -10,7 +10,7 @@
         android:id="@+id/pathView"
         android:layout_width="150dp"
         app:pathColor="@android:color/black"
-        app:pathWidth="1"
+        app:pathWidth="1dp"
         android:layout_gravity="center"
         app:svg="@raw/logout"
         android:layout_height="150dp"/>
