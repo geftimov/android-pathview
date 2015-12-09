@@ -54,9 +54,19 @@ Result
 
 ![svg](https://github.com/geftimov/android-pathview/blob/master/art/path.gif)
 
-#### Use the animator
+#### Use the animator for parallel animation
 
     pathView.getPathAnimator()
+        .delay(100)
+        .duration(500)
+        .listenerStart(new AnimationListenerStart())
+        .listenerEnd(new AnimationListenerEnd())
+        .interpolator(new AccelerateDecelerateInterpolator())
+        .start();
+
+#### Use the animator for sequential animation
+
+    pathView.getSequentialPathAnimator()
         .delay(100)
         .duration(500)
         .listenerStart(new AnimationListenerStart())
@@ -97,7 +107,7 @@ Make and pull - request and we can discuss it.
 ##### Download
 
 	dependencies {
-		compile 'com.eftimoff:android-pathview:1.0.6@aar'
+		compile 'com.eftimoff:android-pathview:1.0.7@aar'
 	}
 
 ##### Licence
@@ -115,7 +125,3 @@ Make and pull - request and we can discuss it.
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
