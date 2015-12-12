@@ -110,6 +110,13 @@ Make and pull - request and we can discuss it.
 		compile 'com.eftimoff:android-pathview:1.0.7@aar'
 	}
 
+##### Changelog
+
+<b>1.0.7</b>
+
+	[Feature] Sequential path animation.
+	[Fix] Use dimensions instead of float for pathWidth.
+
 ##### Licence
 
     Copyright 2015 Georgi Eftimov
