@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "1.0.7"
+version = "1.0.8"
 group = "com.eftimoff"
 
 android {

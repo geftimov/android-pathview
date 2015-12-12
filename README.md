@@ -107,10 +107,14 @@ Make and pull - request and we can discuss it.
 ##### Download
 
 	dependencies {
-		compile 'com.eftimoff:android-pathview:1.0.7@aar'
+		compile 'com.eftimoff:android-pathview:1.0.8@aar'
 	}
 
 ##### Changelog
+
+<b>1.0.8</b>
+
+	[Fix] Removed not properly used android:allowBackup.
 
 <b>1.0.7</b>
 
