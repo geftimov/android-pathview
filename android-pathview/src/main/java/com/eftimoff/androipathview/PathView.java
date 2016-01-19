@@ -1,11 +1,10 @@
 package com.eftimoff.androipathview;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
@@ -14,6 +13,9 @@ import android.view.View;
 import android.view.animation.Interpolator;
 
 import com.eftimoff.mylibrary.R;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.animation.AnimatorSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +77,14 @@ public class PathView extends View implements SvgUtils.AnimationStepListener {
      */
     private boolean fillAfter;
     /**
+     * The view will be filled and showed as default without any animation.
+     */
+    private boolean fill;
+    /**
+     * The solid color used for filling svg when fill is true
+     */
+    private int fillColor;
+    /**
      * The width of the view.
      */
     private int width;
@@ -82,6 +92,16 @@ public class PathView extends View implements SvgUtils.AnimationStepListener {
      * The height of the view.
      */
     private int height;
+    /**
+     * Will be used as a temporary surface in each onDraw call for more control over content are
+     * drawing.
+     */
+    private Bitmap mTempBitmap;
+    /**
+     * Will be used as a temporary Canvas for mTempBitmap for drawing content on it.
+     */
+    private Canvas mTempCanvas;
+
 
     /**
      * Default constructor.
@@ -128,11 +148,16 @@ public class PathView extends View implements SvgUtils.AnimationStepListener {
                 paint.setColor(a.getColor(R.styleable.PathView_pathColor, 0xff00ff00));
                 paint.setStrokeWidth(a.getDimensionPixelSize(R.styleable.PathView_pathWidth, 8));
                 svgResourceId = a.getResourceId(R.styleable.PathView_svg, 0);
+                naturalColors = a.getBoolean(R.styleable.PathView_naturalColors, false);
+                fill = a.getBoolean(R.styleable.PathView_fill,false);
+                fillColor = a.getColor(R.styleable.PathView_fillColor,Color.argb(0,0,0,0));
             }
         } finally {
             if (a != null) {
                 a.recycle();
             }
+            //to draw the svg in first show , if we set fill to true
+            invalidate();
         }
     }
 
@@ -197,21 +222,34 @@ public class PathView extends View implements SvgUtils.AnimationStepListener {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        if(mTempBitmap==null || (mTempBitmap!=null && (mTempBitmap.getWidth()!=canvas.getWidth()||mTempBitmap.getHeight()!=canvas.getHeight()) ))
+        {
+            mTempBitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
+            mTempCanvas = new Canvas(mTempBitmap);
+        }
+
+        mTempBitmap.eraseColor(0);
         synchronized (mSvgLock) {
-            canvas.save();
-            canvas.translate(getPaddingLeft(), getPaddingTop());
+            mTempCanvas.save();
+            mTempCanvas.translate(getPaddingLeft(), getPaddingTop());
+            fill(mTempCanvas);
             final int count = paths.size();
             for (int i = 0; i < count; i++) {
                 final SvgUtils.SvgPath svgPath = paths.get(i);
                 final Path path = svgPath.path;
                 final Paint paint1 = naturalColors ? svgPath.paint : paint;
-                canvas.drawPath(path, paint1);
+                mTempCanvas.drawPath(path, paint1);
             }
-            fillAfter(canvas);
-            canvas.restore();
+
+            fillAfter(mTempCanvas);
+
+            mTempCanvas.restore();
+
+            applySolidColor(mTempBitmap);
+
+            canvas.drawBitmap(mTempBitmap,0,0,null);
         }
     }
-
     /**
      * If there is svg , the user called setFillAfter(true) and the progress is finished.
      *
@@ -221,6 +259,44 @@ public class PathView extends View implements SvgUtils.AnimationStepListener {
         if (svgResourceId != 0 && fillAfter && progress == 1f) {
             svgUtils.drawSvgAfter(canvas, width, height);
         }
+    }
+
+    /**
+     * If there is svg , the user called setFill(true).
+     *
+     * @param canvas Draw to this canvas.
+     */
+    private void fill(final Canvas canvas) {
+        if (svgResourceId != 0 && fill) {
+            svgUtils.drawSvgAfter(canvas, width, height);
+        }
+    }
+
+    /**
+     * If fillColor had value before then we replace untransparent pixels of bitmap by solid color
+     *
+     * @param bitmap Draw to this canvas.
+     */
+    private void applySolidColor(final Bitmap bitmap) {
+        if(fill && fillColor!=Color.argb(0,0,0,0) )
+            if (bitmap != null) {
+                for(int x=0;x<bitmap.getWidth();x++)
+                {
+                    for(int y=0;y<bitmap.getHeight();y++)
+                    {
+                        int argb = bitmap.getPixel(x,y);
+                        int alpha = Color.alpha(argb);
+                        if(alpha!=0)
+                        {
+                            int red = Color.red(fillColor);
+                            int green = Color.green(fillColor);
+                            int blue =  Color.blue(fillColor);
+                            argb = Color.argb(alpha,red,green,blue);
+                            bitmap.setPixel(x,y,argb);
+                        }
+                    }
+                }
+            }
     }
 
     @Override
@@ -300,7 +376,22 @@ public class PathView extends View implements SvgUtils.AnimationStepListener {
     public void setFillAfter(final boolean fillAfter) {
         this.fillAfter = fillAfter;
     }
-
+    /**
+     * If the real svg need to be drawn without the path animation.
+     *
+     * @param fill - boolean if the view needs to be filled after path animation.
+     */
+    public void setFill(final boolean fill) {
+        this.fill = fill;
+    }
+    /**
+     * The color for drawing svg in that color if the color be not transparent
+     *
+     * @param color - the color for filling in that
+     */
+    public void setFillColor(final int color){
+        this.fillColor=color;
+    }
     /**
      * If you want to use the colors from the svg.
      */

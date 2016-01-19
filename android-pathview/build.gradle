@@ -10,7 +10,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 9
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -71,4 +71,5 @@ uploadArchives {
 
 dependencies {
     compile files('libs/androidsvg-1.2.1.jar')
+    compile 'com.nineoldandroids:library:2.4.0'
 }

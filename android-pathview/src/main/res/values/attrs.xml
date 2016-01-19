@@ -4,5 +4,8 @@
     <attr name="pathColor" format="color|reference"/>
     <attr name="pathWidth" format="dimension|reference"/>
     <attr name="svg" format="reference"/>
+    <attr name="fill" format="boolean"/>
+    <attr name="fillColor" format="color|reference"/>
+    <attr name="naturalColors" format="boolean"/>
   </declare-styleable>
 </resources>
