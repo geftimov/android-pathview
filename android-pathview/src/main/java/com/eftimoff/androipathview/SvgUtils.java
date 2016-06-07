@@ -58,7 +58,8 @@ public class SvgUtils {
      * @param svgResource int resource id of the svg.
      */
     public void load(Context context, int svgResource) {
-        if (mSvg != null) return;
+        if (mSvg != null) 
+            return;
         try {
             mSvg = SVG.getFromResource(context, svgResource);
             mSvg.setDocumentPreserveAspectRatio(PreserveAspectRatio.UNSCALED);
@@ -129,7 +130,8 @@ public class SvgUtils {
      * @param canvas      The canvas to be drawn.
      */
     private void rescaleCanvas(int width, int height, float strokeWidth, Canvas canvas) {
-        if (mSvg == null) return;
+        if (mSvg == null) 
+            return;
         final RectF viewBox = mSvg.getDocumentViewBox();
 
         final float scale = Math.min(width
