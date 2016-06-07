@@ -256,7 +256,7 @@ public class PathView extends View implements SvgUtils.AnimationStepListener {
      * @param canvas Draw to this canvas.
      */
     private void fillAfter(final Canvas canvas) {
-        if (svgResourceId != 0 && fillAfter && progress == 1f) {
+        if (svgResourceId != 0 && fillAfter && Math.abs(progress - 1f) < 0.00000001) {
             svgUtils.drawSvgAfter(canvas, width, height);
         }
     }
