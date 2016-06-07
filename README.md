@@ -95,6 +95,12 @@ It is in still in development.
 
 When working with SVGs you can not WRAP_CONTENT your views.
 
+##### Used in apps
+
+* https://play.google.com/store/apps/details?id=com.eftimoff.fonts
+
+Message me if you want to be included in this list.
+
 ##### Thanks to
 
 * https://github.com/romainguy/road-trip
