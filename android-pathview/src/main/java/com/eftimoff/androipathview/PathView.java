@@ -222,7 +222,7 @@ public class PathView extends View implements SvgUtils.AnimationStepListener {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if(mTempBitmap==null || (mTempBitmap!=null && (mTempBitmap.getWidth()!=canvas.getWidth()||mTempBitmap.getHeight()!=canvas.getHeight()) ))
+        if(mTempBitmap==null || (mTempBitmap.getWidth()!=canvas.getWidth()||mTempBitmap.getHeight()!=canvas.getHeight()) )
         {
             mTempBitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
             mTempCanvas = new Canvas(mTempBitmap);
