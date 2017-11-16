@@ -17,7 +17,7 @@ Animate the "procentage" property to make the animation.
     android:layout_height="150dp"
     app:pathColor="@android:color/white"
     app:svg="@raw/settings"
-    app:pathWidth="5"/>
+    app:pathWidth="5dp"/>
 ```
         
 Result 
@@ -32,7 +32,7 @@ Result
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:pathColor="@android:color/white"
-    app:pathWidth="3"/>
+    app:pathWidth="3dp"/>
 ```
 
 In Code    
